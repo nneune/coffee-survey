@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Nadia Neuner-Jehle">
+<meta name="dcterms.date" content="2026-03-30">
+
+<title>What Do People Really Think About Our Coffee?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="coffee_survey_analysis_v2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="coffee_survey_analysis_v2_files/libs/quarto-html/quarto.js"></script>
+<script src="coffee_survey_analysis_v2_files/libs/quarto-html/popper.min.js"></script>
+<script src="coffee_survey_analysis_v2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="coffee_survey_analysis_v2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="coffee_survey_analysis_v2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="coffee_survey_analysis_v2_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="coffee_survey_analysis_v2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="coffee_survey_analysis_v2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="coffee_survey_analysis_v2_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">What Do People Really Think About Our Coffee?</h1>
+<p class="subtitle lead">A Rigorous (But Fun) Survey of Coffee Preferences at Swiss TPH</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Nadia Neuner-Jehle </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 30, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<p>A bit over 10 months ago, during a completely normal lunch, we somehow ended up discussing coffee at the institute. For the newcomers at the table, we explained the situation: real milk can only be used downstairs in the cafeteria, while upstairs it’s powdered milk all the way. At some point, someone boldly announced they were going to cut down their coffee intake - at the time, a modest 6 cups per day.</p>
+<p>That got us thinking: what do people actually think about the coffee here? Too bitter? Too watery? Too artificial (especially the milk)? Not long after, one PhD student present at that lunch (me) decided this clearly required a proper, institute-wide survey.</p>
+<section id="how-we-did-it" class="level3">
+<h3 class="anchored" data-anchor-id="how-we-did-it">How We Did It</h3>
+<p>The survey questions were generated with ChatGPT - it only took 34 prompts - combined with human creativity and ruthless editing. We used Google Forms and advertised it the old-fashioned way: QR codes printed and placed next to every coffee machine in the upper floors. (Not intended for malware and phishing training, I swear!) As Google Forms lets you see results in real-time, we had a way to follow as the answers unfold.</p>
+<p>Interestingly, we quickly realized that tea drinkers felt left out - they opened the survey and found mostly coffee-related questions. So we added a dedicated tea section (thanks to Nosi for major editorial contributions) and introduced branching logic, sending tea and coffee drinkers down different paths based on their initial answer.</p>
+</section>
+<section id="a-note-on-bias" class="level3">
+<h3 class="anchored" data-anchor-id="a-note-on-bias">A Note on Bias</h3>
+<p>The Swiss TPH has 950 staff and students employed, around 250 of whom are students (Master or PhD). We received <strong>64 responses</strong> (after removing duplicates), with the majority being PhD or Master’s students (see <a href="#fig-demographics" class="quarto-xref">Fig&nbsp;1</a>). This huge over-representation of students likely reflects how we shared the survey: the QR codes weren’t super effective, so we circulated the link through several student channels in August 2025. As a result, we largely missed senior staff, lab technicians, and the directorate - either because they wisely avoided random QR codes or because they were busy doing actual work. So keep in mind: we have a student-centric view of Swiss TPH’s coffee culture.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-demographics" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-demographics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-demographics-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-demographics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The Demographics: Who Answered? (n=64)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="tea-or-coffee-how-many-cups" class="level3">
+<h3 class="anchored" data-anchor-id="tea-or-coffee-how-many-cups">Tea or Coffee? How many cups?</h3>
+<p>(And Does Hierarchy Matter?)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tea-vs-coffee" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tea-vs-coffee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-tea-vs-coffee-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tea-vs-coffee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: A) Favorite hot beverages among survey respondents (n = 64). B) Daily consumption of coffee or tea, stratified by role at Swiss TPH (n = 64).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>And the winner is… coffee.</strong> Sadly for the tea drinkers, the results are quite clear: the vast majority prefer coffee (<a href="#fig-tea-vs-coffee" class="quarto-xref">Fig&nbsp;2</a>A). There was, however, one interesting outlier - someone who prefers herbal tea but still usually drinks coffee. Possibly the same person trying to cut down from 6 cups a day?</p>
+<p>As for how many cups per day people drink, the relationship between academic hierarchy and coffee consumption is less dramatic than we might have expected (<a href="#fig-tea-vs-coffee" class="quarto-xref">Fig&nbsp;2</a>B). Group leaders and research staff have only 2 people each (statistically meaningless), but the median hovers around 2 cups per day across all roles. Students tend to drink slightly less, administrative staff slightly more. No clear evidence that higher academic positions require more caffeine - if anything, it seems fairly evenly distributed.</p>
+</section>
+<section id="when-do-people-drink-coffee" class="level3">
+<h3 class="anchored" data-anchor-id="when-do-people-drink-coffee">When Do People Drink Coffee?</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-when" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-when-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-when-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-when-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Respondents were asked when they usually drink coffee (n = 55). Tea drinkers were excluded.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Coffee drinking is spread evently throughout the day, but after lunch stands out as the single most popular time (<a href="#fig-when" class="quarto-xref">Fig&nbsp;3</a>). Mornings are still important, with both the “first thing in the morning” and the mid-morning cup ranking highly, but not as much as one might expect. Perhaps most people get their first cup of coffee at home. The mid-afternoon “crash” is also a common trigger for coffee. Social breaks and coffee with breakfast are mentioned less often. Coffee consumed late in the day is rare, suggesting that most people have a cutoff point (or better sleep discipline).</p>
+</section>
+<section id="why-do-people-drink-their-coffee" class="level3">
+<h3 class="anchored" data-anchor-id="why-do-people-drink-their-coffee">Why Do People Drink Their Coffee?</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-why" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-why-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-why-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-why-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Reasons for coffee consumption at Swiss TPH (n = 55).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>More than 50% of people drink coffee because they like the taste, it’s part of their routine and they’re tired (fair).</strong> Productivity and socializing rank highly too. And yeah, some people just think tea is “boring,” and others use coffee to get through intermittent fasting (<a href="#fig-why" class="quarto-xref">Fig&nbsp;4</a>).</p>
+</section>
+<section id="the-real-question-downstairs-vs.-upstairs" class="level2">
+<h2 class="anchored" data-anchor-id="the-real-question-downstairs-vs.-upstairs">The Real Question: Downstairs vs.&nbsp;Upstairs</h2>
+<p>Now that we’ve covered the background, let’s get to the actual question: <strong>Does the quality of coffee really depend on its source?</strong></p>
+<p>Most people tend to use the downstairs cafeteria, while a smaller group relies on the upstairs machines. A few respondents bring coffee from home or a nearby café, but since that’s outside the institute system, we won’t include them from now on.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 60%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Location</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Downstairs (cafeteria – fresh milk option)</td>
+<td>32</td>
+</tr>
+<tr class="even">
+<td>Upstairs (machine – powdered milk)</td>
+<td>19</td>
+</tr>
+<tr class="odd">
+<td>Somewhere else (home, café, etc.)</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>Focusing only on the in-house coffee options, there’s already a noticeable skew toward downstairs. The question is whether this preference is merely due to convenience or if it actually reflects a real difference in quality.</p>
+<section id="coffee-quality-the-radar-chart-showdown" class="level3">
+<h3 class="anchored" data-anchor-id="coffee-quality-the-radar-chart-showdown">Coffee Quality: The Radar Chart Showdown</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quality" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-quality-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Coffee quality profiles assessed on a scale of 1–5 for nine taste attributes. (Left panel) Comparison between downstairs (n = 32) and upstairs (n = 19) coffee locations. (Right panel) Stratification of upstairs coffee by floor (Floor 1–4). Mean scores are displayed at each vertex. Lines connect mean values across attributes to visualize overall flavor profile.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The coffee downstairs (green line) beats the coffee upstairs (orange line) in seven out of nine categories (see <a href="#fig-quality" class="quarto-xref">Fig&nbsp;5</a>, on the left). It scores much higher in terms of sweetness (2.3), creaminess (3.3) and overall balance (3.4). Floors 1-4 upstairs show consistent ratings across the categories, except for floor 1 (dark brown line), but the sample size is very small (n=2)(<a href="#fig-quality" class="quarto-xref">Fig&nbsp;5</a>, on the right).</p>
+<p>Interestingly, six people reported that they only ever drink coffee downstairs. They might not even know what the coffee upstairs tastes like (for better or worse). Two reported that they only ever use the machines upstairs. One does not mind - or does not know - about the powdered milk, and the other prefers the proximity to the office.</p>
+</section>
+<section id="taste-profiles-what-do-people-actually-taste" class="level3">
+<h3 class="anchored" data-anchor-id="taste-profiles-what-do-people-actually-taste">Taste Profiles: What Do People Actually Taste?</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-preference" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-preference-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-preference-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-preference-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: (A) Respondents taste descriptions of coffee from four locations, stratified by milk type (downstairs: fresh milk; upstairs: powdered milk) and coffee type (black or milk-based). Responses were categorized into seven taste descriptors. (B) Distribution of location preference among respondents (n = 51). “Haven`t tried” responses were excluded.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The difference between the coffee served upstairs and downstairs becomes more obvious when you look at the taste profiles (<a href="#fig-preference" class="quarto-xref">Fig&nbsp;6</a>A).</p>
+<p>Downstairs <strong>milk</strong>-based coffee is mostly described as “balanced,” with a significant number of “creamy” ratings. Upstairs, milk-based coffee tells a different story. The percentage of “artificial” is much higher, and “creamy” ratings are reduced to almost none, probably due to the characteristics of powdered milk.</p>
+<p>Black coffee is a bit more surprising. Downstairs, <strong>black</strong> coffee is still mostly perceived as balanced, while upstairs, black coffee shifts more toward “too bland” and “too bitter.” In theory, these locations shouldn’t differ much, so they may reflect subtle machine differences or how context and expectations shape taste.</p>
+<p>All of this aligns with the overall preference: About 75% of respondents prefer the coffee downstairs (<a href="#fig-preference" class="quarto-xref">Fig&nbsp;6</a>B). Very few prefer the upstairs coffee, likely due to proximity rather than taste. Most people explicitly mention “real milk” or an overall better taste as the reason for their preference.</p>
+</section>
+</section>
+<section id="coffee-knowledge-do-we-know-where-it-comes-from" class="level2">
+<h2 class="anchored" data-anchor-id="coffee-knowledge-do-we-know-where-it-comes-from">Coffee Knowledge: Do We Know Where It Comes From?</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-origin" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-origin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-origin-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-origin-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Respondent knowledge of coffee sourcing at the Institute. Respondents were asked two questions: “Do you know where the coffee beans used at the institute come from?” (Bean Origin, green bars) and “Do you know where the coffee served at the institute is purchased from?” (Purchase Source, orange bars). Responses were categorized into four knowledge levels: “I heard about it (but not sure)”, “Never thought about it”, “No idea”, and “Yes, I know (the supplier or country of origin)”. Counts and percentages are displayed above each bar.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Most institute staff have little knowledge of where their coffee comes from or who supplies it (<a href="#fig-origin" class="quarto-xref">Fig&nbsp;7</a>). When asked about the origin of the beans (shown in green), 44 respondents (86%) said they had “no idea,” while only one person knew the country or region. For the purchase information (in orange), 43 respondents (84%) admitted to having “no idea,” with only one knowing the actual supplier. Interestingly, they were not the same person who knew the origin.</p>
+<p>For the curious: our coffee comes from <a href="https://www.hochstrasser.ch/de/site/ueber-uns">Hochstrasser</a>, a Swiss supplier with a wide product range. However, the “Giusto Crema/Espresso” label displayed on the machines doesn’t appear in their standard product list. So, it’s difficult to find information about it, such as its origin, certifications, and whether it’s organic.</p>
+</section>
+<section id="what-could-be-better-the-wish-list" class="level2">
+<h2 class="anchored" data-anchor-id="what-could-be-better-the-wish-list">What Could Be Better? (The Wish List)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-improvement" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-improvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-improvement-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-improvement-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Categorized suggestions for coffee improvements (n = 34). Responses were grouped into seven categories based on keyword matching. Bars show the frequency of each suggestion type.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Real milk is by far the most requested improvement (see <a href="#fig-improvement" class="quarto-xref">Fig&nbsp;8</a>). Of the 33 responses, nine (27%) explicitly ask for real milk on all floors. The reasons are consistent: better taste, more convenience, and avoiding the downstairs “milk queue.” Next are taste and strength, with suggestions for less bitter coffee, stronger decaf, and better beans. Some respondents also requested plant-based options and iced drinks, reflecting more diverse preferences. One person mentioned sustainability, such as fair trade and organic products. Another humorously suggested increasing prices. Notably, a few respondents are perfectly happy with the current situation.</p>
+<hr>
+<section id="key-takeaways" class="level3">
+<h3 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h3>
+<p><strong>Real milk is the priority.</strong> Nearly 75% of respondents prefer coffee from downstairs, and over a quarter of improvement suggestions focus on expanding access to real milk on other floors. Even for black coffee, location seems to matter, suggesting that factors beyond milk, such as differences in machines, water temperature, or expectations, influence perception. The location may also play an important psychological role. People tend to stay longer in the cafeteria, meet colleagues for a break, and socialize more. This could affect the perceived taste of coffee, whether black or with milk.</p>
+<p><strong>Coffee serves as working fuel.</strong> Taste and routine play a key role, but tiredness and productivity are also major drivers, suggesting that people are either keeping up with demanding workloads or not getting enough sleep.</p>
+<p><strong>Hierarchy doesn’t seem to influence consumption.</strong> Most people drink around two cups per day, regardless of their academic position.</p>
+<p><strong>We don’t think much about where our coffee comes from.</strong> Around 85% of respondents don’t know, which points to a missed opportunity for transparency, and possibly for improving quality.</p>
+</section>
+<section id="what-could-change" class="level3">
+<h3 class="anchored" data-anchor-id="what-could-change">What Could Change</h3>
+<ul>
+<li>Add real milk and/or plant-based milk options to at least one location upstairs</li>
+<li>Post visible information about coffee origin and certifications</li>
+<li>Consider offering ice lattes or providing freezers where people can store ice</li>
+</ul>
+</section>
+<section id="a-note-on-tea" class="level3">
+<h3 class="anchored" data-anchor-id="a-note-on-tea">A Note on Tea</h3>
+<p>This survey included only nine tea drinkers, which is too small of a sample size for meaningful analysis. A follow-up survey focusing specifically on tea would be valuable if we can get enough responses. Preliminary results show that most tea drinkers consume only one cup per day. Green tea, English Breakfast tea, and Earl Grey tea are clearly the favorites, with most respondents saying “I like it” or “I love it!” (<a href="#fig-tea" class="quarto-xref">Fig&nbsp;9</a>). Rosehip tea was widely disliked, while fruit and other herbal teas fell somewhere between “meh” and “I like it.”</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tea" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tea-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="coffee_survey_analysis_v2_files/figure-html/fig-tea-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tea-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Tea ratings among respondents (n=9). Each tea type was rated on a five-point scale. Boxes indicate median and quartiles; points show individual ratings.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="final-thoughts" class="level3">
+<h3 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h3>
+<p>If the Swiss TPH would like to bring some extra happiness to the coffee break ritual of researchers and students, offering real milk on every floor would go a long way. It’s a relatively small change with a surprisingly large impact.</p>
+<p>Thanks to everyone who participated. ☕</p>
+<div style="font-size: 0.9em; color: #666; margin-top: 2em; border-top: 1px solid #ddd; padding-top: 1em;">
+<p>All code and data for this survey are available on <a href="https://github.com/neunna/coffee-survey">GitHub</a> if you want to dig deeper or adapt it for your own institute.</p>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

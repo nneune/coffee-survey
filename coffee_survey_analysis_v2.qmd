@@ -1,0 +1,682 @@
+---
+title: "What Do People Really Think About Our Coffee?"
+subtitle: "A Rigorous (But Fun) Survey of Coffee Preferences at Swiss TPH"
+author: "Nadia Neuner-Jehle"
+date: last-modified
+format:
+  html:
+    embed-resources: true
+    self-contained: true
+execute:
+  echo: false
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+#| label: data-load
+
+library(readr)
+library(tidyverse)
+library(RColorBrewer)
+library(ggpubr)
+library(ggrepel)
+
+df <- read_csv("C:/Users/neunna/Documents/Code/survey/coffee_survey.csv", show_col_types = FALSE)
+
+df <- df %>%
+  rename(
+    Role = "1. What’s your role at the institute?",
+    Favorite = "2. What’s your usual hot beverage at the institute?",
+    Sweets = "3. Do you add anything sweet?",
+    Coffee_Drinker = "4. Do you drink coffee at least occasionally at the institute?",
+    Coffee_Quantity = "5. How many cups of coffee do you usually drink on a typical workday?",
+    Coffee_Time = "6. When do you usually drink coffee?",
+    Coffee_Reason = "7. Why do you drink coffee?",
+    Coffee_Location = "8. Where do you usually get your coffee(s)?",
+    Coffee_Floor = "8a. If you get your coffee from upstairs, which floor do you usually get it from?",
+    Tried_Both = "9. Have you tried coffee from both locations at the institute?",
+    Bitterness = "10. How would you rate the bitterness of the coffee you usually drink?",
+    Strength = "11. How would you rate the strength (caffeine content) of the coffee you usually drink?",
+    
+    Sweetness = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Sweetness]",
+    Acidity = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Acidity]",
+    Saltiness = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Saltiness]",
+    Burnt = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Burnt flavor]",
+    Artificial = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Artificial taste (e.g., powdered milk)]",
+    Creaminess = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Creaminess (if milk is added)]",
+    Balance = "12. Please rate the following flavors in the coffee you usually drink:  \nScale: 1 = Not at all → 5 = Very [Overall balance]",
+    
+    Taste_Downstairs_Milk = "13. How would you describe the taste of coffee from the following locations? [Downstairs (cafeteria) – milk]",
+    Taste_Downstairs_Black = "13. How would you describe the taste of coffee from the following locations? [Downstairs (cafeteria) – black]",
+    Taste_Upstairs_Milk = "13. How would you describe the taste of coffee from the following locations? [Upstairs – powder milk]",
+    Taste_Upstairs_Black = "13. How would you describe the taste of coffee from the following locations? [Upstairs – black]",
+    
+    Preference = "14. Which location do you prefer, and why (↓)  ?",
+    Preference_Why = "Why:",
+    
+    Know_Bean_Origin = "15. Do you know where the coffee beans used at the institute come from?",
+    Know_Purchase = "16. Do you know where the coffee served at the institute is purchased from?",
+    
+    Coffee_Improve = "17. If you could improve one thing about coffee at the institute, what would it be?",
+    Coffee_Comments = "18. Any memorable coffee moments or strong opinions you’d like to share?",
+    
+    Tea_Quantity = "5. How many cups of tea do you usually drink on a typical workday?",
+    Tea_Time = "6. When do you usually drink tea?",
+    Tea_Type = "7. What type of tea do you enjoy the most",
+    Tea_Strength = "8. Favorite tea strength",
+    Tea_Preference = "9. How do you take your tea",
+    
+    Tea_English_Breakfast = "10. Please rate the types of tea offered at the Institute [English breakfast]",
+    Tea_Fruit = "10. Please rate the types of tea offered at the Institute [Fruit Infusion]",
+    Tea_Green = "10. Please rate the types of tea offered at the Institute [Pure Green Tea]",
+    Tea_Peppermint = "10. Please rate the types of tea offered at the Institute [Peppermint]",
+    Tea_Camomile = "10. Please rate the types of tea offered at the Institute [Camomile]",
+    Tea_Earl_Grey = "10. Please rate the types of tea offered at the Institute [Earl Grey]",
+    Tea_Lemon_Ginger = "10. Please rate the types of tea offered at the Institute [Lemon & Ginger]",
+    Tea_Linden = "10. Please rate the types of tea offered at the Institute [Linden]",
+    Tea_Darjeeling = "10. Please rate the types of tea offered at the Institute [Pure Darjeeling]",
+    Tea_Rosehip = "10. Please rate the types of tea offered at the Institute [Rosehip & Hibiscus]",
+    
+    Tea_Pay = "11. Do you pay for your tea downstairs?",
+    Tea_Improve = "12. Spill the tea. If you could improve one thing about tea at the institute, what would it be?"
+  )
+
+df$Timestamp <- parse_date_time(df$Timestamp,
+  orders = "Y/m/d I:M:S p",
+  tz = "CET"
+)
+
+## Rename some positions
+df <- df %>%
+  mutate(
+    Role = case_when(
+      str_detect(Role, "PhD student") ~ "PhD student",
+      Role == "Principal Investigator (PI) / Group Leader" ~ "Group Leader",
+      Role %in% c("Administrative Staff", "Finance / HR Staff", "Technician (non-lab, e.g., IT, facility)") ~ "Administrative Staff",
+      Role == "Scientific Software Engineer" ~ "Research Staff",
+      Role == "Postdoc" ~ "Postdoc",
+      Role == "Master’s student / Intern" ~ "Master Student",
+      Role == "Research Assistant" ~ "Research Staff",
+      str_detect(Role, "Technician") ~ "Technician",
+      Role == "Project Manager" ~ "Project Manager",
+      str_detect(Role, "Visitor") ~ "Visitor",
+      TRUE ~ "Other"
+    )
+  )
+
+df$Favorite <- recode(df$Favorite,
+                      "Coffee with creme (Café crème)" = "Café crème")
+
+df$Coffee_Quantity <- recode(df$Coffee_Quantity,
+                      "5 or more" = "≥5")
+
+df <- df %>%
+  add_count(Favorite, name = "count_favorite") %>%
+  mutate(
+    Type = case_when(
+      Favorite == "Hot chocolate" ~ "Hot chocolate",
+      Favorite %in% c("Black coffee", "Cappuccino", "Café crème",
+                      "Decaf coffee", "Espresso", "Latte macchiato", "Milk coffee") ~ "Coffee",
+      TRUE ~ "Tea"
+    )
+  ) %>% 
+  mutate(Type = factor(Type, levels = c("Tea", "Coffee","Hot chocolate")))
+
+```
+
+------------------------------------------------------------------------
+
+A bit over 10 months ago, during a completely normal lunch, we somehow ended up discussing coffee at the institute. For the newcomers at the table, we explained the situation: real milk can only be used downstairs in the cafeteria, while upstairs it’s powdered milk all the way. At some point, someone boldly announced they were going to cut down their coffee intake - at the time, a modest 6 cups per day.
+
+That got us thinking: what do people actually think about the coffee here? Too bitter? Too watery? Too artificial (especially the milk)? Not long after, one PhD student present at that lunch (me) decided this clearly required a proper, institute-wide survey.
+
+### How We Did It
+
+The survey questions were generated with ChatGPT - it only took 34 prompts - combined with human creativity and ruthless editing. We used Google Forms and advertised it the old-fashioned way: QR codes printed and placed next to every coffee machine in the upper floors. (Not intended for malware and phishing training, I swear!) As Google Forms lets you see results in real-time, we had a way to follow as the answers unfold.
+
+Interestingly, we quickly realized that tea drinkers felt left out - they opened the survey and found mostly coffee-related questions. So we added a dedicated tea section (thanks to Nosi for major editorial contributions) and introduced branching logic, sending tea and coffee drinkers down different paths based on their initial answer.
+
+### A Note on Bias
+
+The Swiss TPH has 950 staff and students employed, around 250 of whom are students (Master or PhD). We received **64 responses** (after removing duplicates), with the majority being PhD or Master’s students (see [Fig @fig-demographics]). This huge over-representation of students likely reflects how we shared the survey: the QR codes weren’t super effective, so we circulated the link through several student channels in August 2025. As a result, we largely missed senior staff, lab technicians, and the directorate - either because they wisely avoided random QR codes or because they were busy doing actual work. So keep in mind: we have a student-centric view of Swiss TPH’s coffee culture.
+
+```{r}
+#| label: fig-demographics
+#| fig-cap: "The Demographics: Who Answered? (n=64)"
+f1 <- df %>%
+  count(Role, sort = TRUE) %>%
+  mutate(Role = fct_reorder(Role, n)) %>%
+  ggplot(aes(x = n, y = Role)) +
+  geom_bar(width = 0.8, stat = "identity", fill = "#2c3e50") +
+  geom_text(aes(label = n), hjust = -0.25, size = 4, fontface = "bold") +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    # title = "Who Participated in Our Coffee Survey?",
+    x = "Number of participants",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.y = element_text(size = 11),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+plot(f1)
+```
+
+------------------------------------------------------------------------
+
+### Tea or Coffee? How many cups?
+
+(And Does Hierarchy Matter?)
+
+```{r}
+#| label: fig-tea-vs-coffee
+#| fig-cap: "A) Favorite hot beverages among survey respondents (n = 64). B) Daily consumption of coffee or tea, stratified by role at Swiss TPH (n = 64)."
+
+f2 <- 
+  df %>%  count(Type) %>%
+  ggplot(aes(x = "", y = n, fill = Type)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(fill = "Beverage") +
+  theme_void() +
+  geom_text(aes(label = n), size=4,position = position_stack(vjust = 0.5)) +
+  theme(
+  plot.title = element_text(face = "bold", hjust = 0.5),
+  legend.position = "bottom",
+  legend.title = element_blank(),
+  legend.box.margin = margin(t = -120)  # Pull legend up closer
+  )
+
+df$Tea_Quantity <- recode(df$Tea_Quantity,
+                      "<1" = "0")
+df$Coffee_Quantity <- recode(df$Coffee_Quantity,
+                      "≥5" = "5")
+df <- df %>% 
+  mutate(
+    Role = factor(Role,
+                  levels = c("Group Leader","Project Manager","Administrative Staff","Research Staff","Postdoc","PhD student", "Master Student")),
+    Quantity = ifelse(is.na(Coffee_Quantity),as.numeric(Tea_Quantity),as.numeric(Coffee_Quantity)),
+  )
+
+
+f3 <- df %>%
+  ggplot(aes(x = Role, y = Quantity)) +
+  geom_point(alpha=0) +
+    geom_boxplot(data = . %>% group_by(Role) %>% filter(n() > 2) %>% ungroup(),width = 0.6, outlier.shape = NA) +
+    geom_jitter(
+    aes(color = Type),
+    width = 0.25, height = 0.02,
+    alpha = 0.6, size = 2
+  ) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_y_continuous(
+    breaks = 0:5,
+    labels = function(x) {
+      ifelse(x == 0, "<1", ifelse(x == 5, ">5", x))
+    }
+  ) +
+  labs(x = NULL, y = "Cups per day") +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(linewidth = 0.3),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.title = element_blank(),
+    legend.position = "none"
+  )
+  
+
+ggarrange(f2, ggplot() + theme_void(), f3,
+  ncol = 3,  widths = c(1, 0.15, 1.4),  align = "h", labels = c("A", "B", ""))
+
+```
+
+**And the winner is... coffee.** Sadly for the tea drinkers, the results are quite clear: the vast majority prefer coffee ([Fig @fig-tea-vs-coffee]A). There was, however, one interesting outlier - someone who prefers herbal tea but still usually drinks coffee. Possibly the same person trying to cut down from 6 cups a day?
+
+As for how many cups per day people drink, the relationship between academic hierarchy and coffee consumption is less dramatic than we might have expected ([Fig @fig-tea-vs-coffee]B). Group leaders and research staff have only 2 people each (statistically meaningless), but the median hovers around 2 cups per day across all roles. Students tend to drink slightly less, administrative staff slightly more. No clear evidence that higher academic positions require more caffeine - if anything, it seems fairly evenly distributed.
+
+### When Do People Drink Coffee?
+
+```{r}
+#| label: fig-when
+#| fig-cap: "Respondents were asked when they usually drink coffee (n = 55). Tea drinkers were excluded."
+ctime <- df %>%
+  drop_na(Coffee_Time) %>%
+  separate_rows(Coffee_Time, sep = ";") %>%
+  mutate(Coffee_Time = str_trim(Coffee_Time)) %>%
+  count(Coffee_Time, name = "Count") %>%
+  mutate(Coffee_Time = fct_rev(factor(Coffee_Time,
+    labels = c("First thing in the morning", "With breakfast", "Mid-morning", 
+               "Social break", "After lunch", "Afternoon crash", "Late work"),
+    levels = c("First thing in the morning", "With breakfast", "Mid-morning", 
+               "Social break / chat with colleagues", "After lunch", "During afternoon crash", "After hours / late work")
+  )))
+
+f4 <- ctime %>%
+  ggplot(aes(x = Count, y = Coffee_Time)) +
+  geom_bar(width = 0.8, stat = "identity", fill = "#2c3e50") +
+  geom_text(aes(label = Count), hjust = -0.25, size = 4, fontface = "bold") +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    # title = "When Do People Drink Their Coffee?",
+    x = "Number of participants (Multiple Choice)",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.y = element_text(size = 11),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+plot(f4)
+```
+
+Coffee drinking is spread evently throughout the day, but after lunch stands out as the single most popular time ([Fig @fig-when]). Mornings are still important, with both the "first thing in the morning" and the mid-morning cup ranking highly, but not as much as one might expect. Perhaps most people get their first cup of coffee at home. The mid-afternoon "crash" is also a common trigger for coffee. Social breaks and coffee with breakfast are mentioned less often. Coffee consumed late in the day is rare, suggesting that most people have a cutoff point (or better sleep discipline).
+
+### Why Do People Drink Their Coffee?
+
+```{r}
+#| label: fig-why
+#| fig-cap: "Reasons for coffee consumption at Swiss TPH (n = 55)."
+
+creason <-  df %>%
+  drop_na(Coffee_Reason) %>%
+  separate_rows(Coffee_Reason, sep = ";") %>%
+  mutate(Coffee_Reason = str_trim(Coffee_Reason)) %>%  # Remove whitespace
+  count(Coffee_Reason, name = "Count") %>%
+  mutate(Coffee_Reason = fct_rev(factor(Coffee_Reason,labels = c("Taste","Socializing","Productivity","Routine","Tired","Tea is boring","Intermittent Fasting"),
+                              levels = c(
+"I enjoy the taste","To socialize","To stay focused / productive","It’s part of my routine","I’m tired","Because tea is boring","In the morning because I try to do intermittent fasting and coffee fills me up (and is less boring than water or tea)"))))
+
+f5 <- creason %>%
+  ggplot(aes(x = Count, y = Coffee_Reason)) +
+  geom_bar(width = 0.8, stat = "identity", fill = "#2c3e50") +
+  geom_vline(xintercept = 55/2, color = "darkorange", linetype = "dashed", linewidth = 0.8) +
+  annotate("text", label = "50%", x = 55/2, y = 0.5, 
+           size = 4, color = "darkorange", hjust = -0.2, vjust = -0.2) +
+  geom_text(aes(label = Count), hjust = -0.25, size = 4, fontface = "bold") +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(
+    # title = "Why do people drink their coffee?",
+    x = "Number of participants",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.y = element_text(size = 11),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+plot(f5)
+```
+
+**More than 50% of people drink coffee because they like the taste, it’s part of their routine and they're tired (fair).** Productivity and socializing rank highly too. And yeah, some people just think tea is “boring,” and others use coffee to get through intermittent fasting ([Fig @fig-why]).
+
+## The Real Question: Downstairs vs. Upstairs
+
+Now that we’ve covered the background, let’s get to the actual question: **Does the quality of coffee really depend on its source?**
+
+Most people tend to use the downstairs cafeteria, while a smaller group relies on the upstairs machines. A few respondents bring coffee from home or a nearby café, but since that’s outside the institute system, we won't include them from now on.
+
+| Location                                   | Count |
+|--------------------------------------------|-------|
+| Downstairs (cafeteria – fresh milk option) | 32    |
+| Upstairs (machine – powdered milk)         | 19    |
+| Somewhere else (home, café, etc.)          | 4     |
+
+: {tbl-colwidths="\[60,40\]"}
+
+Focusing only on the in-house coffee options, there’s already a noticeable skew toward downstairs. The question is whether this preference is merely due to convenience or if it actually reflects a real difference in quality.
+
+### Coffee Quality: The Radar Chart Showdown
+
+```{r}
+#| label: fig-quality
+#| fig-asp: .5
+#| fig-cap: "Coffee quality profiles assessed on a scale of 1–5 for nine taste attributes. (Left panel) Comparison between downstairs (n = 32) and upstairs (n = 19) coffee locations. (Right panel) Stratification of upstairs coffee by floor (Floor 1–4). Mean scores are displayed at each vertex. Lines connect mean values across attributes to visualize overall flavor profile."
+
+coffee <- df %>% group_by(Coffee_Location) %>%
+  filter(Coffee_Location != "I get it somewhere else (e.g., bring from home, café, etc.)", !is.na(Coffee_Location)) %>%
+  mutate(Coffee_Location = factor(Coffee_Location, labels = c("Upstairs","Downstairs"), levels=c("Upstairs (from a machine – powdered milk)","Downstairs (next to the cafeteria – fresh milk option)")))
+
+# Pivot longer to get all taste attributes
+coffee_long <- coffee %>%
+  pivot_longer(
+    cols = c(Bitterness, Strength, Sweetness, Acidity, Saltiness, Burnt, Artificial, Creaminess, Balance),
+    names_to = "Attribute",
+    values_to = "Score"
+  ) %>%
+  filter(!is.na(Score))
+
+coffee_summary <- coffee_long %>%
+  group_by(Coffee_Location, Attribute) %>%
+  summarise(Mean_Score = mean(Score, na.rm = TRUE),
+            count = n()) %>%
+  mutate(Coffee_Location_label = paste0(Coffee_Location, " (n=", first(count), ")")) %>% ungroup()
+
+coffee_floor <- coffee_long %>%
+  filter(Coffee_Location == "Upstairs") %>% 
+  group_by(Coffee_Floor, Attribute) %>%
+  summarise(Mean_Score = mean(Score, na.rm = TRUE),
+            count = n()) %>%
+  mutate(Coffee_Floor_label = paste0(Coffee_Floor, " (n=", first(count), ")")) %>% ungroup()
+
+
+combined_data <- bind_rows(
+  coffee_summary %>%
+    mutate(Group = "Location", Category = Coffee_Location_label),
+  coffee_floor %>%
+    mutate(Group = "Floor", Category = Coffee_Floor_label)
+) %>%
+  mutate(Category = factor(Category, levels = c(sort(unique(coffee_summary$Coffee_Location_label)),sort(unique(coffee_floor$Coffee_Floor_label))))) %>%
+  mutate(Group = factor(Group, levels = c("Location","Floor")))
+
+ggplot(combined_data, aes(x = Attribute, y = Mean_Score, color = Category, group = Category)) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 3) +
+  facet_wrap(~Group, ncol = 2) +
+  coord_polar(clip = "off") +
+  scale_y_continuous(limits = c(0, 5), breaks = 1:5) +
+  scale_color_manual(values = c("#1B9E77","#D95F02","#7F3B08","#B35806","#E08214","#FDB462"), "Location") +
+  labs(
+    # title = "Coffee Quality Comparison", 
+    color = "Group", y = "") +
+    geom_text_repel(aes(label = round(Mean_Score, 1)), 
+                  size = 3, 
+                  fontface = "bold",
+                  show.legend = FALSE,
+                  force = 2,  # Strength of repulsion
+                  max.overlaps = 2) +
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
+    axis.text = element_text(size = 11),
+    axis.text.y = element_blank(),
+    panel.grid.major = element_line(color = "gray85"),
+    legend.position = "bottom",
+    strip.text = element_blank(),
+    panel.spacing = unit(1.4, "lines")
+  )
+
+```
+
+The coffee downstairs (green line) beats the coffee upstairs (orange line) in seven out of nine categories (see [Fig @fig-quality], on the left). It scores much higher in terms of sweetness (2.3), creaminess (3.3) and overall balance (3.4). Floors 1-4 upstairs show consistent ratings across the categories, except for floor 1 (dark brown line), but the sample size is very small (n=2)([Fig @fig-quality], on the right).
+
+Interestingly, six people reported that they only ever drink coffee downstairs. They might not even know what the coffee upstairs tastes like (for better or worse). Two reported that they only ever use the machines upstairs. One does not mind - or does not know - about the powdered milk, and the other prefers the proximity to the office.
+
+### Taste Profiles: What Do People Actually Taste?
+
+```{r}
+#| label: fig-preference
+#| fig-cap: '(A) Respondents taste descriptions of coffee from four locations, stratified by milk type (downstairs: fresh milk; upstairs: powdered milk) and coffee type (black or milk-based). Responses were categorized into seven taste descriptors. (B) Distribution of location preference among respondents (n = 51). "Haven`t tried" responses were excluded.'
+
+coffee <- coffee %>% ungroup() %>%
+    mutate(
+        Preference = case_when(
+            str_detect(Preference, "ownstairs") ~ "Downstairs",
+            Preference == "Upstairs (powder milk machines)" ~ "Upstairs",
+            Preference == "No preference" ~ "No preference",
+            Preference == "I avoid both" ~ "Avoid both",
+            str_detect(Preference, "4th floor") ~ "Upstairs",
+            TRUE ~ "Other"
+        ))
+
+taste_long <- coffee %>%
+  pivot_longer(
+    cols = starts_with("Taste_"),
+    names_to = "Taste_Type",
+    values_to = "Taste_Description"
+  ) %>%
+  filter(Taste_Description != "Haven’t tried") %>%  # Remove "Haven’t tried"
+  select(Taste_Type, Taste_Description, Preference) %>%
+  mutate(
+    Taste_Type = str_remove(Taste_Type, "Taste_"),
+    Taste_Type = factor(Taste_Type, 
+                        levels = c("Downstairs_Milk","Upstairs_Milk", "Downstairs_Black","Upstairs_Black")),
+    Taste_Description  = case_when(
+            Taste_Description  == "Haven’t tried" ~ NA,
+            Taste_Description  == "Other" ~ NA,
+            Taste_Description  == "Creamy (with milk)" ~ "Creamy",
+            TRUE ~ Taste_Description
+        
+    ))
+
+g1 <- taste_long %>%
+  count(Taste_Type, Taste_Description) %>%
+  drop_na() %>%
+  group_by(Taste_Type) %>%
+  mutate(
+    Taste_Type_label = factor(paste0(str_replace(Taste_Type, "_", " "), "\n(n=", sum(n), ")"))) %>%
+  ungroup() %>%
+  ggplot(aes(x = Taste_Type_label, y = n, fill = Taste_Description)) +
+  geom_col(width = 0.7, color = "white", linewidth = 1, position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(x = NULL,y = "Percentage (%)", fill = NULL,title="") +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    panel.grid.major.x = element_blank()
+  )
+
+g2 <- coffee %>% 
+  count(Preference, sort = TRUE) %>%
+  ggplot(aes(x = "", y = n, fill = Preference)) +
+  geom_col(width = 1) +
+  coord_polar(theta = "y") +
+  scale_fill_brewer(palette = "BuPu", direction = -1) +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    legend.title = element_blank(),
+    legend.direction = "vertical"
+  )
+
+ggarrange(g1,g2, ncol=2, align = "h",labels = c("A","B"))
+```
+
+The difference between the coffee served upstairs and downstairs becomes more obvious when you look at the taste profiles ([Fig @fig-preference]A).
+
+Downstairs **milk**-based coffee is mostly described as “balanced,” with a significant number of “creamy” ratings. Upstairs, milk-based coffee tells a different story. The percentage of “artificial” is much higher, and "creamy" ratings are reduced to almost none, probably due to the characteristics of powdered milk.
+
+Black coffee is a bit more surprising. Downstairs, **black** coffee is still mostly perceived as balanced, while upstairs, black coffee shifts more toward “too bland” and “too bitter.” In theory, these locations shouldn't differ much, so they may reflect subtle machine differences or how context and expectations shape taste.
+
+All of this aligns with the overall preference: About 75% of respondents prefer the coffee downstairs ([Fig @fig-preference]B). Very few prefer the upstairs coffee, likely due to proximity rather than taste. Most people explicitly mention “real milk” or an overall better taste as the reason for their preference.
+
+## Coffee Knowledge: Do We Know Where It Comes From?
+
+```{r}
+#| label: fig-origin
+#| fig-cap: 'Respondent knowledge of coffee sourcing at the Institute. Respondents were asked two questions: "Do you know where the coffee beans used at the institute come from?" (Bean Origin, green bars) and "Do you know where the coffee served at the institute is purchased from?" (Purchase Source, orange bars). Responses were categorized into four knowledge levels: "I heard about it (but not sure)", "Never thought about it", "No idea", and "Yes, I know (the supplier or country of origin)". Counts and percentages are displayed above each bar.'
+
+coffee <- coffee %>%
+  mutate(Know_Bean_Origin = case_when(
+    str_detect(Know_Bean_Origin, "ever thought about") ~ "Never thought about it",
+    str_detect(Know_Bean_Origin, "supermarket|supplier|country") ~ "Yes, I know!",
+    str_detect(Know_Bean_Origin, "not sure") ~ "I heard about it",
+    TRUE ~ Know_Bean_Origin
+  )) %>%
+    mutate(Know_Purchase = case_when(
+    str_detect(Know_Purchase, "ever thought about") ~ "Never thought about it",
+    str_detect(Know_Purchase, "supermarket|supplier|country") ~ "Yes, I know!",
+    str_detect(Know_Purchase, "not sure") ~ "I heard about it",
+    TRUE ~ Know_Purchase
+  )) 
+
+knowledge_summary <- bind_rows(
+  tibble(
+    Question = "Bean Origin",
+    Response = names(table(coffee$Know_Bean_Origin)),
+    Count = as.numeric(table(coffee$Know_Bean_Origin))
+  ),
+  tibble(
+    Question = "Purchase Source",
+    Response = names(table(coffee$Know_Purchase)),
+    Count = as.numeric(table(coffee$Know_Purchase))
+  )
+) %>%
+  group_by(Question) %>%
+  mutate(Percentage = round(Count / sum(Count) * 100, 0)) %>%
+  ungroup() %>%
+  add_row(Question = "Purchase Source", Response="I heard about it", Count=0, Percentage=0)
+
+ggplot(knowledge_summary, aes(x = Response, y = Count, fill = Question)) +
+  geom_col(position = "dodge", color = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(Count, "\n(", Percentage, "%)"), color=Question), 
+            position = position_dodge(width = 0.9), vjust = -0.5, 
+            fontface = "bold", size = 3.5) + 
+  guides(color = "none") +
+  scale_fill_brewer(palette = "Dark2", aesthetics = c("fill", "color")) +
+  scale_y_continuous(breaks = scales::breaks_pretty(n = 5),
+                     limits = c(0, max(knowledge_summary$Count) * 1.15)) +
+  labs(
+    # title = "Coffee Knowledge: Origin & Sourcing",
+       x = NULL, y = "Number of participants", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+```
+
+Most institute staff have little knowledge of where their coffee comes from or who supplies it ([Fig @fig-origin]). When asked about the origin of the beans (shown in green), 44 respondents (86%) said they had "no idea," while only one person knew the country or region. For the purchase information (in orange), 43 respondents (84%) admitted to having "no idea," with only one knowing the actual supplier. Interestingly, they were not the same person who knew the origin.
+
+For the curious: our coffee comes from [Hochstrasser](https://www.hochstrasser.ch/de/site/ueber-uns), a Swiss supplier with a wide product range. However, the "Giusto Crema/Espresso" label displayed on the machines doesn't appear in their standard product list. So, it's difficult to find information about it, such as its origin, certifications, and whether it's organic.
+
+## What Could Be Better? (The Wish List)
+
+```{r}
+#| label: fig-improvement
+#| fig-cap: "Categorized suggestions for coffee improvements (n = 34). Responses were grouped into seven categories based on keyword matching. Bars show the frequency of each suggestion type."
+
+
+improvements <- coffee$Coffee_Improve %>%
+  tibble(text = .) %>%
+  filter(!is.na(text)) %>%
+  mutate(
+    Category = case_when(
+      str_detect(text, "(?i)plant-based|vegan|frothy") ~ "Vegan options",
+      str_detect(text, "(?i)decaf") ~ "Decaf options",
+      str_detect(text, "(?i)real milk|milk") ~ "Milk options",
+      str_detect(text, "(?i)iced|ice|freezer") ~ "Cold options",
+      str_detect(text, "(?i)stronger|bitter|taste|flavor|quality|bean|caramel") ~ "Taste/strength",
+      str_detect(text, "(?i)free|expensive|price|full") ~ "Price/quantity",
+      str_detect(text, "(?i)organic|fair|label|fake") ~ "Sustainability",
+      TRUE ~ "Other"
+    )
+  ) %>% 
+  filter(Category != "Other")
+
+ggplot(improvements, aes(x = fct_infreq(Category), fill = Category)) +
+  geom_bar(color = "white", linewidth = 1) +
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.5, 
+            fontface = "bold", size = 4) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_y_continuous(breaks = scales::breaks_pretty(n = 5),
+                     limits = c(0, max(table(improvements$Category)) * 1.15)) +
+  labs(x = NULL, y = "Number of participants", fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    legend.position = "none"
+  )
+```
+
+Real milk is by far the most requested improvement (see [Fig @fig-improvement]). Of the 33 responses, nine (27%) explicitly ask for real milk on all floors. The reasons are consistent: better taste, more convenience, and avoiding the downstairs “milk queue.” Next are taste and strength, with suggestions for less bitter coffee, stronger decaf, and better beans. Some respondents also requested plant-based options and iced drinks, reflecting more diverse preferences. One person mentioned sustainability, such as fair trade and organic products. Another humorously suggested increasing prices. Notably, a few respondents are perfectly happy with the current situation.
+
+------------------------------------------------------------------------
+
+### Key Takeaways
+
+**Real milk is the priority.** Nearly 75% of respondents prefer coffee from downstairs, and over a quarter of improvement suggestions focus on expanding access to real milk on other floors. Even for black coffee, location seems to matter, suggesting that factors beyond milk, such as differences in machines, water temperature, or expectations, influence perception. The location may also play an important psychological role. People tend to stay longer in the cafeteria, meet colleagues for a break, and socialize more. This could affect the perceived taste of coffee, whether black or with milk.
+
+**Coffee serves as working fuel.** Taste and routine play a key role, but tiredness and productivity are also major drivers, suggesting that people are either keeping up with demanding workloads or not getting enough sleep.
+
+**Hierarchy doesn’t seem to influence consumption.** Most people drink around two cups per day, regardless of their academic position.
+
+**We don’t think much about where our coffee comes from.** Around 85% of respondents don’t know, which points to a missed opportunity for transparency, and possibly for improving quality.
+
+### What Could Change
+
+-   Add real milk and/or plant-based milk options to at least one location upstairs
+-   Post visible information about coffee origin and certifications
+-   Consider offering ice lattes or providing freezers where people can store ice
+
+### A Note on Tea
+
+This survey included only nine tea drinkers, which is too small of a sample size for meaningful analysis. A follow-up survey focusing specifically on tea would be valuable if we can get enough responses.
+Preliminary results show that most tea drinkers consume only one cup per day. Green tea, English Breakfast tea, and Earl Grey tea are clearly the favorites, with most respondents saying "I like it" or "I love it!" ([Fig @fig-tea]). Rosehip tea was widely disliked, while fruit and other herbal teas fell somewhere between "meh" and "I like it."
+
+```{r}
+#| label: fig-tea
+#| fig-cap: "Tea ratings among respondents (n=9). Each tea type was rated on a five-point scale. Boxes indicate median and quartiles; points show individual ratings."
+
+tea <- df %>% filter(Coffee_Drinker == "No") %>% select(starts_with("Tea_"))
+tea %>% 
+    select(Tea_English_Breakfast, Tea_Fruit, Tea_Green, Tea_Peppermint, 
+           Tea_Camomile, Tea_Earl_Grey, Tea_Lemon_Ginger, Tea_Darjeeling, Tea_Rosehip) %>%
+    pivot_longer(everything(), names_to = "Tea_Type", values_to = "Rating") %>%
+  mutate(
+    Tea_Type = str_remove(Tea_Type, "Tea_"),
+    Tea_Type = str_replace(Tea_Type, "_", " "),
+    # Transform ratings to numeric
+    Rating_Numeric = case_when(
+      Rating == "Hate it!" ~ 1,
+      Rating == "I don't like…" ~ 2,
+      Rating == "Meh" ~ 3,
+      Rating == "I like it" ~ 4,
+      Rating == "Love it!" ~ 5,
+      TRUE ~ NA_real_
+    )
+  ) %>%
+  ggplot(aes(x = reorder(Tea_Type, Rating_Numeric, median), y = Rating_Numeric, fill = Tea_Type)) +
+  geom_boxplot(alpha = 0.7, color = "grey30", linewidth = 0.25) +
+  geom_jitter(width = 0.1, alpha = 0.5, size = 2) +
+  scale_y_continuous(
+    breaks = 1:5,
+    labels = c("Hate it!", "I don't like it", "Meh", "I like it", "Love it!"),
+    limits = c(0.5, 5.5)
+  ) +
+  scale_fill_brewer(palette = "Set1") +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major.x = element_blank()
+  )
+```
+
+### Final Thoughts
+
+If the Swiss TPH would like to bring some extra happiness to the coffee break ritual of researchers and students, offering real milk on every floor would go a long way. It's a relatively small change with a surprisingly large impact.
+
+Thanks to everyone who participated. ☕
+
+<div style="font-size: 0.9em; color: #666; margin-top: 2em; border-top: 1px solid #ddd; padding-top: 1em;">
+All code and data for this survey are available on [GitHub](https://github.com/neunna/coffee-survey) if you want to dig deeper or adapt it for your own institute.
+</div>
